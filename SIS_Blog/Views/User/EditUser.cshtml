@@ -1,0 +1,63 @@
+﻿@{
+    ViewData["Title"] = "Edit User";
+}
+
+@{
+    ViewData["Title"] = "Edit User";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+
+                <div class="card-header">
+                    <h3 class="text-center">Edit User</h3>
+                </div>
+
+                <div class="card-body">
+                    <form id="edit-user-form">
+                        <input type="hidden" id="user-id" value="@ViewBag.UserId" />
+
+                        <div class="mb-3">
+                            <label class="form-label">Username</label>
+                            <input id="username" class="form-control" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input id="email" class="form-control" type="email" />
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input id="password" class="form-control"/>
+                        </div>
+
+                        <div class="d-grid">
+                            <button id="save-btn" type="button" class="btn btn-primary">Submit</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function(){
+            const id = document.getElementById('user-id').value;
+            fetch('/api/users/' + id, { credentials: 'include' }).then(r=>r.json()).then(u=>{
+                document.getElementById('username').value = u.username;
+                document.getElementById('email').value = u.email;
+            });
+
+            document.getElementById('save-btn').addEventListener('click', function(){
+                const payload = { id: parseInt(id,10), username: document.getElementById('username').value, email: document.getElementById('email').value, password: document.getElementById('password').value };
+                fetch('/api/users/' + id, { method: 'PUT', credentials: 'include', headers: { 'Content-Type':'application/json' }, body: JSON.stringify(payload) }).then(()=> location.href = '/User/UserOverview');
+            });
+        })();
+    </script>
+}

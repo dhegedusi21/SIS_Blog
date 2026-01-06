@@ -1,0 +1,59 @@
+﻿@{
+    ViewData["Title"] = "Log In";
+}
+
+@model SIS_Blog.Models.User
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+
+                <div class="card-header">
+                    <h3 class="text-center">Login</h3>
+                </div>
+
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success">
+                        @TempData["Success"]
+                    </div>
+                }
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger">
+                        @ViewBag.Error
+                    </div>
+                }
+
+                <div class="card-body">
+
+                    <form id="login-form">
+
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input id="email" class="form-control" type="email" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input id="password" class="form-control" type="password" />
+                        </div>
+
+                        <div class="d-grid">
+                            <button id="login-btn" type="button" class="btn btn-primary">Login</button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+                <div class="card-footer text-center">
+                    Don't have an account? <a asp-controller="User" asp-action="Register">Register here</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

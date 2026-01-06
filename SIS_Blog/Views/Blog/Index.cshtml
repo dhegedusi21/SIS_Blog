@@ -1,0 +1,178 @@
+﻿@using System.Security.Claims
+@{
+    ViewData["Title"] = "Blog";
+}
+@model List<SIS_Blog.Models.Post>
+
+<div class="container mt-4">
+    <div class="row mb-4">
+
+        <div class="col d-flex align-items-center">
+            <h2 class="mb-0">Blog Posts</h2>
+            <a asp-action="Create" class="btn btn-primary ms-3">Create New Post</a>
+        </div>
+
+        <div class="col">
+            <form asp-action="Index" method="get" class="d-flex">
+                <input type="text" name="searchString" class="form-control me-2" placeholder="Search posts..." />
+                <button type="submit" class="btn btn-outline-primary">Search</button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+    @{
+        var currentUserId = 0;
+        if (User.Identity.IsAuthenticated)
+        {
+            currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+        }
+    }
+
+    <div id="server-posts">
+        @if (Model != null)
+        {
+            foreach (var post in Model)
+            {
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start bg-dark p-3 rounded">
+
+                        <h3 class="mb-0">@post.Title</h3>
+
+                        @if (post.User_Id == currentUserId)
+                        {
+                            <div class="border rounded px-2 py-1">
+
+                                <a asp-action="Edit" asp-route-id="@post.Id" class="text-muted text-decoration-none">Edit</a>
+                                <span class="mx-1">|</span>
+                                <a asp-action="Delete" asp-route-id="@post.Id" class="text-muted text-decoration-none">Delete</a>
+
+                            </div>
+                        }
+                    </div>
+
+                    @{
+                        var postCreated = DateTime.TryParse(post.CreatedAt, out var pc) ? pc : DateTime.MinValue;
+                        var postUpdated = DateTime.TryParse(post.UpdatedAt, out var pu) ? pu : DateTime.MinValue;
+                    }
+                    <p class="text-muted mt-2">
+                        By @post.User.Username on @postCreated.ToShortDateString()
+
+                        @if ((postUpdated - postCreated).TotalSeconds > 1)
+                        {
+                            <span>(Edited on @postUpdated.ToString("dd/MM/yyyy HH:mm"))</span>
+                        }
+                    </p>
+
+                    <p>@post.Content</p>
+
+                    <div class="mt-4">
+                        <h5>Comments</h5>
+
+                        @foreach (var comment in post.Comments)
+                        {
+                            <div class="card mb-2">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start bg-dark p-2 rounded">
+                                        <div>
+
+                                            <p class="mb-1">@comment.Content</p>
+
+                                            @{
+                                                var commentCreated = DateTime.TryParse(comment.CreatedAt, out var cc) ? cc : DateTime.MinValue;
+                                                var commentUpdated = DateTime.TryParse(comment.UpdatedAt, out var cu) ? cu : DateTime.MinValue;
+                                            }
+                                            <small class="text-muted">
+                                                By @comment.User.Username on @commentCreated.ToShortDateString()
+                                                @if ((commentUpdated - commentCreated).TotalSeconds > 1)
+                                                {
+                                                    <span>(Edited on @commentUpdated.ToString("dd/MM/yyyy HH:mm"))</span>
+                                                }
+                                            </small>
+
+                                        </div>
+
+                                        @if (comment.User_Id == currentUserId)
+                                        {
+                                            <div class="border rounded px-2 py-1">
+
+                                                <a asp-action="EditComment" asp-route-id="@comment.Id" class="text-muted text-decoration-none">Edit</a>
+                                                <span class="mx-1">|</span>
+                                                <a asp-action="DeleteComment" asp-route-id="@comment.Id" class="text-muted text-decoration-none">Delete</a>
+                                            
+                                            </div>
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        <form class="api-create-comment mt-3">
+
+                            <input type="hidden" name="blogpostId" value="@post.Id" />
+                            <input type="hidden" name="userId" value="@post.User_Id" />
+                            <div class="mb-3">
+                                <textarea name="content" class="form-control" rows="2" placeholder="Write a comment..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Comment</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+        }
+    </div>
+
+    <div id="api-posts" class="d-none"></div>
+
+</div>
+
+@section Scripts {
+    <script>
+        // Example: fetch posts from the API and render them. This makes the website use the API.
+        (function(){
+            const apiContainer = document.getElementById('api-posts');
+            const serverContainer = document.getElementById('server-posts');
+
+            fetch('/api/Posts', { credentials: 'include' })
+                .then(r => r.json())
+                .then(posts => {
+                    if (!Array.isArray(posts)) return;
+                    // build html
+                    let html = '';
+                    posts.forEach(post => {
+                        html += `<div class="card mb-4"><div class="card-body">`;
+                        html += `<div class="d-flex justify-content-between align-items-start bg-dark p-3 rounded"><h3 class="mb-0">${escapeHtml(post.title)}</h3></div>`;
+                        html += `<p class="text-muted mt-2">By ${escapeHtml((post.user && post.user.username) || 'Unknown')} on ${new Date(post.createdAt).toLocaleDateString()}</p>`;
+                        html += `<p>${escapeHtml(post.content)}</p>`;
+                        html += `<div class="mt-4"><h5>Comments</h5>`;
+                        if (post.comments && post.comments.length) {
+                            post.comments.forEach(comment => {
+                                html += `<div class="card mb-2"><div class="card-body"><div class="d-flex justify-content-between align-items-start bg-dark p-2 rounded"><div><p class=\"mb-1\">${escapeHtml(comment.content)}</p><small class=\"text-muted\">By ${escapeHtml((comment.user && comment.user.username) || 'Unknown')} on ${new Date(comment.createdAt).toLocaleDateString()}</small></div></div></div></div>`;
+                            });
+                        }
+                        html += `</div></div></div>`;
+                    });
+
+                    apiContainer.innerHTML = html;
+                    apiContainer.classList.remove('d-none');
+                    if (serverContainer) serverContainer.classList.add('d-none');
+                })
+                .catch(err => {
+                    console.error('Failed to load posts from API', err);
+                });
+
+            function escapeHtml(str){
+                if (!str) return '';
+                return String(str).replace(/[&<>"'`=\/]/g, function(s){
+                    return ({
+                        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;','/':'&#x2F;','`':'&#x60;','=':'&#x3D;'
+                    })[s];
+                });
+            }
+        })();
+    </script>
+}
