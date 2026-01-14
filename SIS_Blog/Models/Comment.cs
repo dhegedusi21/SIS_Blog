@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SIS_Blog.Models;
 
@@ -17,13 +18,13 @@ public partial class Comment
 
     public int BlogpostId { get; set; }
 
-    // legacy aliases
+    [NotMapped]
     public int User_Id
     {
         get => UserId;
         set => UserId = value;
     }
-
+    [NotMapped]
     public int Blogpost_Id
     {
         get => BlogpostId;

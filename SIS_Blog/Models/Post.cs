@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SIS_Blog.Models;
 
@@ -17,7 +18,7 @@ public partial class Post
 
     public int UserId { get; set; }
 
-    // legacy alias used by some views/scaffolded code
+    [NotMapped]
     public int User_Id
     {
         get => UserId;

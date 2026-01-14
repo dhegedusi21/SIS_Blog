@@ -113,7 +113,7 @@
                         <form class="api-create-comment mt-3">
 
                             <input type="hidden" name="blogpostId" value="@post.Id" />
-                            <input type="hidden" name="userId" value="@post.User_Id" />
+                            <input type="hidden" name="userId" value="@currentUserId" />
                             <div class="mb-3">
                                 <textarea name="content" class="form-control" rows="2" placeholder="Write a comment..."></textarea>
                             </div>
@@ -132,7 +132,9 @@
 
 @section Scripts {
     <script>
-        // Example: fetch posts from the API and render them. This makes the website use the API.
+        // expose current user id to client-side code so API-rendered UI can show edit/delete controls
+        window.currentUserId = @currentUserId;
+
         (function(){
             const apiContainer = document.getElementById('api-posts');
             const serverContainer = document.getElementById('server-posts');
@@ -141,19 +143,52 @@
                 .then(r => r.json())
                 .then(posts => {
                     if (!Array.isArray(posts)) return;
-                    // build html
                     let html = '';
                     posts.forEach(post => {
                         html += `<div class="card mb-4"><div class="card-body">`;
-                        html += `<div class="d-flex justify-content-between align-items-start bg-dark p-3 rounded"><h3 class="mb-0">${escapeHtml(post.title)}</h3></div>`;
-                        html += `<p class="text-muted mt-2">By ${escapeHtml((post.user && post.user.username) || 'Unknown')} on ${new Date(post.createdAt).toLocaleDateString()}</p>`;
+                        html += `<div class="d-flex justify-content-between align-items-start bg-dark p-3 rounded"><h3 class="mb-0">${escapeHtml(post.title)}</h3>`;
+
+                        // edit/delete for post owner
+                        if (window.currentUserId && post.userId === window.currentUserId) {
+                            html += `<div class="border rounded px-2 py-1">`;
+                            html += `<a href="/Blog/Edit/${post.id}" class="text-muted text-decoration-none me-2">Edit</a>`;
+                            html += `<a href="#" class="text-muted text-decoration-none api-delete-post" data-id="${post.id}">Delete</a>`;
+                            html += `</div>`;
+                        }
+
+                        html += `</div>`;
+                        html += `<p class="text-muted mt-2">By ${escapeHtml(post.username || 'Unknown')} on ${new Date(post.createdAt).toLocaleDateString()}</p>`;
                         html += `<p>${escapeHtml(post.content)}</p>`;
                         html += `<div class="mt-4"><h5>Comments</h5>`;
+
                         if (post.comments && post.comments.length) {
                             post.comments.forEach(comment => {
-                                html += `<div class="card mb-2"><div class="card-body"><div class="d-flex justify-content-between align-items-start bg-dark p-2 rounded"><div><p class=\"mb-1\">${escapeHtml(comment.content)}</p><small class=\"text-muted\">By ${escapeHtml((comment.user && comment.user.username) || 'Unknown')} on ${new Date(comment.createdAt).toLocaleDateString()}</small></div></div></div></div>`;
+                                html += `<div class="card mb-2"><div class="card-body"><div class="d-flex justify-content-between align-items-start bg-dark p-2 rounded"><div>`;
+                                html += `<p class="mb-1">${escapeHtml(comment.content)}</p>`;
+                                html += `<small class="text-muted">By ${escapeHtml(comment.username || 'Unknown')} on ${new Date(comment.createdAt).toLocaleDateString()}</small></div>`;
+
+                                // comment owner controls
+                                if (window.currentUserId && comment.userId === window.currentUserId) {
+                                    html += `<div class="border rounded px-2 py-1 ms-2">`;
+                                    html += `<a href="/Blog/EditComment/${comment.id}" class="text-muted text-decoration-none me-2">Edit</a>`;
+                                    html += `<a href="#" class="text-muted text-decoration-none api-delete-comment" data-id="${comment.id}">Delete</a>`;
+                                    html += `</div>`;
+                                }
+
+                                html += `</div></div></div>`;
                             });
                         }
+
+                        // add-comment form for authenticated users
+                        if (window.currentUserId && window.currentUserId > 0) {
+                            html += `<form class="api-create-comment mt-3">`;
+                            html += `<input type="hidden" name="blogpostId" value="${post.id}" />`;
+                            html += `<input type="hidden" name="userId" value="${window.currentUserId}" />`;
+                            html += `<div class="mb-3"><textarea name="content" class="form-control" rows="2" placeholder="Write a comment..."></textarea></div>`;
+                            html += `<button type="submit" class="btn btn-primary">Add Comment</button>`;
+                            html += `</form>`;
+                        }
+
                         html += `</div></div></div>`;
                     });
 
