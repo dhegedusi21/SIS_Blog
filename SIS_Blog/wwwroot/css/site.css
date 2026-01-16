@@ -1,22 +1,141 @@
-html {
-  font-size: 14px;
+:root {
+    --bg: #0b0c0d;
+    --surface: #0f1113;
+    --card: #0e1113;
+    --muted: #9aa3ad;
+    --accent: #6d5cff;
+    --accent-2: #4f8cff;
+    --text: #e6eef6;
+    --glass: rgba(255,255,255,0.02);
+    --radius: 10px;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+/* Scope everything under body.site-body so defaults outside remain unaffected */
+body.site-body {
+    min-height: 100%;
+    margin: 0;
+    background: linear-gradient(180deg, var(--bg) 0%, #070708 100%) fixed;
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.45;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
+    /* Container sizing */
+    body.site-body .container {
+        max-width: 1100px;
+    }
 
-html {
-  position: relative;
-  min-height: 100%;
-}
+    /* Navbar: ensure dark */
+    body.site-body .navbar,
+    body.site-body .navbar-dark {
+        background-color: #121416 !important;
+        border-bottom: 1px solid rgba(255,255,255,0.03) !important;
+    }
 
-body {
-  margin-bottom: 60px;
+    body.site-body .navbar-brand {
+        color: var(--text) !important;
+    }
+
+    /* Force dark cards/panels (override Bootstrap white) */
+    body.site-body .card,
+    body.site-body .panel,
+    body.site-body .panel-default {
+        background: var(--card) !important;
+        border: 1px solid rgba(255,255,255,0.03) !important;
+        color: var(--text) !important;
+        border-radius: var(--radius) !important;
+        box-shadow: 0 8px 28px rgba(0,0,0,0.6) !important;
+    }
+
+        /* Make inner card bodies transparent so nested cards show */
+        body.site-body .card .card-body {
+            background: transparent !important;
+            color: var(--text) !important;
+        }
+
+        /* Ensure headers/titles that used bg-light or bg-white go dark */
+        body.site-body .bg-white,
+        body.site-body .bg-light,
+        body.site-body .card .card-header,
+        body.site-body .card .bg-dark {
+            background: transparent !important;
+            color: var(--text) !important;
+            border-bottom: 1px solid rgba(255,255,255,0.02) !important;
+        }
+
+    /* Post title bars using .bg-dark */
+    body.site-body .d-flex.bg-dark {
+        background: rgba(0,0,0,0.45) !important;
+    }
+
+    /* Nested cards (comments etc.) */
+    body.site-body .card .card {
+        background: rgba(255,255,255,0.02) !important;
+        border-color: rgba(255,255,255,0.03) !important;
+    }
+
+    /* Inputs, textareas */
+    body.site-body .form-control,
+    body.site-body textarea.form-control,
+    body.site-body input.form-control {
+        background: rgba(255,255,255,0.02) !important;
+        color: var(--text) !important;
+        border: 1px solid rgba(255,255,255,0.04) !important;
+        border-radius: 6px !important;
+    }
+
+    /* Placeholder color */
+    body.site-body ::placeholder {
+        color: rgba(230,238,246,0.45) !important;
+    }
+
+    /* Buttons */
+    body.site-body .btn-primary,
+    body.site-body .btn-accent {
+        background: linear-gradient(90deg,var(--accent),var(--accent-2)) !important;
+        border: none !important;
+        color: #fff !important;
+        box-shadow: 0 8px 30px rgba(79,140,255,0.06) !important;
+    }
+
+    body.site-body .btn-outline-light {
+        color: var(--text) !important;
+        border-color: rgba(255,255,255,0.06) !important;
+    }
+
+    /* Links */
+    body.site-body a {
+        color: var(--accent) !important;
+    }
+
+        body.site-body a:hover {
+            color: var(--accent-2) !important;
+        }
+
+    /* Make headings visible */
+    body.site-body h1, body.site-body h2, body.site-body h3, body.site-body h4 {
+        color: var(--text) !important;
+    }
+
+    /* Small utilities */
+    body.site-body .text-muted {
+        color: var(--muted) !important;
+    }
+
+    body.site-body .site-footer,
+    body.site-body .footer {
+        color: var(--muted) !important;
+    }
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+    body.site-body .container {
+        padding: 0 0.6rem;
+    }
+
+    body.site-body .card {
+        margin-bottom: 1rem;
+    }
 }

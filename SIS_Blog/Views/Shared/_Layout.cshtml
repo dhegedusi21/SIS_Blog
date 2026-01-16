@@ -3,12 +3,12 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Simple_Blog</title>
+    <title>@(ViewData["Title"] ?? "Simple_Blog")</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Simple_Blog.styles.css" asp-append-version="true" />
+    <!-- removed problematic /Simple_Blog.styles.css -->
 </head>
-<body class="bg-dark text-light">
+<body class="site-body">
     <header>
         <nav class="navbar navbar-expand-sm navbar-dark bg-dark border-bottom border-secondary">
             <div class="container-fluid">
@@ -25,7 +25,7 @@
 
                         <ul class="navbar-nav">
 
-                            @if (!User.Identity.IsAuthenticated){
+                            @if (!User.Identity.IsAuthenticated) {
                                 <li class="nav-item">
                                     <a class="nav-link" asp-controller="User" asp-action="Login">Log in</a>
                                 </li>
@@ -33,9 +33,7 @@
                                 <li class="nav-item">
                                     <a class="nav-link" asp-controller="User" asp-action="Register">Register</a>
                                 </li>
-                            }
-
-                            else{
+                            } else {
                                 <li class="nav-item">
                                     <a class="nav-link" asp-controller="User" asp-action="UserOverview">User Overview</a>
                                 </li>
@@ -47,7 +45,7 @@
 
                         </ul>
 
-                        @if (User.Identity.IsAuthenticated){
+                        @if (User.Identity.IsAuthenticated) {
                             <ul class="navbar-nav ms-auto">
 
                                 <li class="nav-item">
