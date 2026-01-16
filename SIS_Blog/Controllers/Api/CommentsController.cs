@@ -100,6 +100,9 @@ public class CommentsController : ControllerBase
         if (!int.TryParse(userIdClaim, out var currentUserId)) return Unauthorized();
         if (c.UserId != currentUserId) return Forbid();
 
+        // Validate antiforgery token for AJAX
+        await _antiforgery.ValidateRequestAsync(HttpContext);
+
         _db.Comments.Remove(c);
         await _db.SaveChangesAsync();
         return NoContent();

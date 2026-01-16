@@ -122,6 +122,9 @@ public class PostsController : ControllerBase
         if (!int.TryParse(userIdClaim, out var currentUserId)) return Unauthorized();
         if (p.UserId != currentUserId) return Forbid();
 
+        // Validate antiforgery token for AJAX
+        await _antiforgery.ValidateRequestAsync(HttpContext);
+
         _db.Posts.Remove(p);
         await _db.SaveChangesAsync();
         return NoContent();

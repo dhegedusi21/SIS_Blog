@@ -28,7 +28,7 @@ const api = {
   },
 
   deleteComment(id) {
-    return fetch(`/api/comments/${id}`, { method: 'DELETE', credentials: 'include' });
+    return fetchWithCsrf(`/api/comments/${id}`, { method: 'DELETE' });
   }
 };
 
