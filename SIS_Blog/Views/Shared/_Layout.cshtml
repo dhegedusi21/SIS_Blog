@@ -74,7 +74,6 @@
     </div>
     @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery __antiforgery
     <script>
-        // expose antiforgery token to JavaScript via a meta tag
         (function(){
             var token = '@(__antiforgery.GetAndStoreTokens(Context).RequestToken)';
             var m = document.createElement('meta');

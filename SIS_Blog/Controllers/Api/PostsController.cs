@@ -75,7 +75,6 @@ public class PostsController : ControllerBase
             UserId = currentUserId
         };
 
-        // Validate antiforgery token for AJAX
         await _antiforgery.ValidateRequestAsync(HttpContext);
 
         _db.Posts.Add(post);
@@ -100,7 +99,6 @@ public class PostsController : ControllerBase
         if (!int.TryParse(userIdClaim, out var currentUserId)) return Unauthorized();
         if (p.UserId != currentUserId) return Forbid();
 
-        // Validate antiforgery token for AJAX
         try { await _antiforgery.ValidateRequestAsync(HttpContext); } catch { }
 
         if (!string.IsNullOrWhiteSpace(model.Title)) p.Title = model.Title;
@@ -122,7 +120,6 @@ public class PostsController : ControllerBase
         if (!int.TryParse(userIdClaim, out var currentUserId)) return Unauthorized();
         if (p.UserId != currentUserId) return Forbid();
 
-        // Validate antiforgery token for AJAX
         await _antiforgery.ValidateRequestAsync(HttpContext);
 
         _db.Posts.Remove(p);

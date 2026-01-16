@@ -1,4 +1,3 @@
-// Minimal API client for CRUD operations
 const api = {
   jsonHeaders() { return { 'Content-Type': 'application/json' }; },
 
@@ -32,7 +31,6 @@ const api = {
   }
 };
 
-// read antiforgery token from meta and attach to fetch where needed
 function fetchWithCsrf(url, opts){
   opts = opts || {};
   opts.credentials = opts.credentials || 'include';
@@ -42,7 +40,6 @@ function fetchWithCsrf(url, opts){
   return fetch(url, opts);
 }
 
-// Bind simple handlers for forms rendered on server
 document.addEventListener('submit', function(e){
   const form = e.target;
   if (form.matches('.api-create-post')){
@@ -62,7 +59,6 @@ document.addEventListener('submit', function(e){
   }
 });
 
-// Login/register handlers
 document.addEventListener('click', function(e){
   if (e.target && e.target.id === 'login-btn'){
     const email = document.getElementById('email').value;
@@ -77,7 +73,6 @@ document.addEventListener('click', function(e){
   }
 });
 
-// Delegate click for delete links
 document.addEventListener('click', function(e){
   const el = e.target;
   if (el.matches('.api-delete-post')){

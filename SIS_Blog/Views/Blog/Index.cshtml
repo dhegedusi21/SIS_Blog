@@ -132,7 +132,6 @@
 
 @section Scripts {
     <script>
-        // expose current user id to client-side code so API-rendered UI can show edit/delete controls
         window.currentUserId = @currentUserId;
 
         (function(){
@@ -148,7 +147,6 @@
                         html += `<div class="card mb-4"><div class="card-body">`;
                         html += `<div class="d-flex justify-content-between align-items-start bg-dark p-3 rounded"><h3 class="mb-0">${escapeHtml(post.title)}</h3>`;
 
-                        // edit/delete for post owner
                         if (window.currentUserId && post.userId === window.currentUserId) {
                             html += `<div class="border rounded px-2 py-1">`;
                             html += `<a href="/Blog/Edit/${post.id}" class="text-muted text-decoration-none me-2">Edit</a>`;
@@ -167,7 +165,6 @@
                                 html += `<p class="mb-1">${escapeHtml(comment.content)}</p>`;
                                 html += `<small class="text-muted">By ${escapeHtml(comment.username || 'Unknown')} on ${new Date(comment.createdAt).toLocaleDateString()}</small></div>`;
 
-                                // comment owner controls
                                 if (window.currentUserId && comment.userId === window.currentUserId) {
                                     html += `<div class="border rounded px-2 py-1 ms-2">`;
                                     html += `<a href="/Blog/EditComment/${comment.id}" class="text-muted text-decoration-none me-2">Edit</a>`;
@@ -179,7 +176,6 @@
                             });
                         }
 
-                        // add-comment form for authenticated users
                         if (window.currentUserId && window.currentUserId > 0) {
                             html += `<form class="api-create-comment mt-3">`;
                             html += `<input type="hidden" name="blogpostId" value="${post.id}" />`;

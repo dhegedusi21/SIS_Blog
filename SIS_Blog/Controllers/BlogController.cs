@@ -61,7 +61,6 @@ public class BlogController : Controller
         return View(post);
     }
 
-    // Accept form POST from Views/Blog/Edit.cshtml
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(Post model)
@@ -78,7 +77,6 @@ public class BlogController : Controller
         if (post.UserId != currentUserId)
             return Forbid();
 
-        // apply changes
         if (!string.IsNullOrWhiteSpace(model.Title)) post.Title = model.Title;
         post.Content = model.Content ?? string.Empty;
         post.UpdatedAt = System.DateTime.UtcNow.ToString("o");
@@ -106,7 +104,6 @@ public class BlogController : Controller
         return View(comment);
     }
 
-    // Accept form POST from Views/Blog/EditComment.cshtml
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> EditComment(Comment model)
@@ -130,7 +127,6 @@ public class BlogController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // Replace GET delete with POST delete to avoid dangerous GET state changes
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)

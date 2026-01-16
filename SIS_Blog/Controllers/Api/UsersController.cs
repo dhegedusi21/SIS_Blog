@@ -45,7 +45,6 @@ public class UsersController : ControllerBase
         if (!int.TryParse(userIdClaim, out var currentUserId)) return Unauthorized();
         if (u.Id != currentUserId) return Forbid();
 
-        // Validate antiforgery token for AJAX
         await _antiforgery.ValidateRequestAsync(HttpContext);
 
         _db.Users.Remove(u);

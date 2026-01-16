@@ -31,7 +31,6 @@ public class AuthController : ControllerBase
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == req.Email);
         if (user == null) return Unauthorized();
 
-        // verify hashed password
         if (!BCrypt.Net.BCrypt.Verify(req.Password, user.Password)) return Unauthorized();
 
         var claims = new List<Claim> {

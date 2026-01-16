@@ -41,7 +41,6 @@ public class CommentsController : ControllerBase
             BlogpostId = model.BlogpostId
         };
 
-        // Validate antiforgery token for AJAX
         await _antiforgery.ValidateRequestAsync(HttpContext);
 
         _db.Comments.Add(comment);
@@ -80,7 +79,6 @@ public class CommentsController : ControllerBase
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (!int.TryParse(userIdClaim, out var currentUserId)) return Unauthorized();
         if (c.UserId != currentUserId) return Forbid();
-        // Validate antiforgery token for AJAX
         await _antiforgery.ValidateRequestAsync(HttpContext);
 
         c.Content = model.Content;
@@ -100,7 +98,6 @@ public class CommentsController : ControllerBase
         if (!int.TryParse(userIdClaim, out var currentUserId)) return Unauthorized();
         if (c.UserId != currentUserId) return Forbid();
 
-        // Validate antiforgery token for AJAX
         await _antiforgery.ValidateRequestAsync(HttpContext);
 
         _db.Comments.Remove(c);

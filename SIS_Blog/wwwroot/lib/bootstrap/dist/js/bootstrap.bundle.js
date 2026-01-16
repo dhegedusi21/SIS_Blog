@@ -1,23 +1,14 @@
-/*!
-  * Bootstrap v5.1.0 (https://getbootstrap.com/)
-  * Copyright 2011-2021 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
-  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
-  */
+
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.bootstrap = factory());
 }(this, (function () { 'use strict';
 
-  /**
-   * --------------------------------------------------------------------------
-   * Bootstrap (v5.1.0): util/index.js
-   * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
-   * --------------------------------------------------------------------------
-   */
+  
   const MAX_UID = 1000000;
   const MILLISECONDS_MULTIPLIER = 1000;
-  const TRANSITION_END = 'transitionend'; // Shoutout AngusCroll (https://goo.gl/pxwQGp)
+  const TRANSITION_END = 'transitionend';
 
   const toType = obj => {
     if (obj === null || obj === undefined) {
@@ -26,11 +17,6 @@
 
     return {}.toString.call(obj).match(/\s([a-z]+)/i)[1].toLowerCase();
   };
-  /**
-   * --------------------------------------------------------------------------
-   * Public Util Api
-   * --------------------------------------------------------------------------
-   */
 
 
   const getUID = prefix => {
@@ -45,14 +31,11 @@
     let selector = element.getAttribute('data-bs-target');
 
     if (!selector || selector === '#') {
-      let hrefAttr = element.getAttribute('href'); // The only valid content that could double as a selector are IDs or classes,
-      // so everything starting with `#` or `.`. If a "real" URL is used as the selector,
-      // `document.querySelector` will rightfully complain it is invalid.
-      // See https://github.com/twbs/bootstrap/issues/32273
+      let hrefAttr = element.getAttribute('href'); 
 
       if (!hrefAttr || !hrefAttr.includes('#') && !hrefAttr.startsWith('.')) {
         return null;
-      } // Just in case some CMS puts out a full URL with the anchor appended
+      }
 
 
       if (hrefAttr.includes('#') && !hrefAttr.startsWith('#')) {
@@ -83,7 +66,7 @@
   const getTransitionDurationFromElement = element => {
     if (!element) {
       return 0;
-    } // Get transition-duration of the element
+    }
 
 
     let {
@@ -91,11 +74,11 @@
       transitionDelay
     } = window.getComputedStyle(element);
     const floatTransitionDuration = Number.parseFloat(transitionDuration);
-    const floatTransitionDelay = Number.parseFloat(transitionDelay); // Return 0 if element or transition duration is not found
+    const floatTransitionDelay = Number.parseFloat(transitionDelay); 
 
     if (!floatTransitionDuration && !floatTransitionDelay) {
       return 0;
-    } // If multiple durations are defined, take the first
+    }
 
 
     transitionDuration = transitionDuration.split(',')[0];
@@ -121,7 +104,6 @@
 
   const getElement = obj => {
     if (isElement$1(obj)) {
-      // it's a jQuery object or a node element
       return obj.jquery ? obj[0] : obj;
     }
 
@@ -171,7 +153,7 @@
   const findShadowRoot = element => {
     if (!document.documentElement.attachShadow) {
       return null;
-    } // Can find the shadow root otherwise it'll return the document
+    }
 
 
     if (typeof element.getRootNode === 'function') {
@@ -181,7 +163,7 @@
 
     if (element instanceof ShadowRoot) {
       return element;
-    } // when we don't find a shadow root
+    }
 
 
     if (!element.parentNode) {
@@ -192,18 +174,9 @@
   };
 
   const noop = () => {};
-  /**
-   * Trick to restart an element's animation
-   *
-   * @param {HTMLElement} element
-   * @return void
-   *
-   * @see https://www.charistheo.io/blog/2021/02/restart-a-css-animation-with-javascript/#restarting-a-css-animation
-   */
 
 
   const reflow = element => {
-    // eslint-disable-next-line no-unused-expressions
     element.offsetHeight;
   };
 
@@ -223,7 +196,6 @@
 
   const onDOMContentLoaded = callback => {
     if (document.readyState === 'loading') {
-      // add listener on the first call when the document is in loading state
       if (!DOMContentLoadedCallbacks.length) {
         document.addEventListener('DOMContentLoaded', () => {
           DOMContentLoadedCallbacks.forEach(callback => callback());
