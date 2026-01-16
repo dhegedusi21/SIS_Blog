@@ -130,9 +130,10 @@ public class BlogController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // Simple GET delete endpoints to match existing anchors. Consider converting to POST for CSRF safety.
-    [HttpGet]
-    public async Task<IActionResult> Delete(int id)
+    // Replace GET delete with POST delete to avoid dangerous GET state changes
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var post = await _db.Posts.FindAsync(id);
         if (post == null) return NotFound();
@@ -150,8 +151,9 @@ public class BlogController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    [HttpGet]
-    public async Task<IActionResult> DeleteComment(int id)
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteCommentConfirmed(int id)
     {
         var comment = await _db.Comments.FindAsync(id);
         if (comment == null) return NotFound();

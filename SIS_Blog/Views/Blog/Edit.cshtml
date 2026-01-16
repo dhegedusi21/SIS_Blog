@@ -13,6 +13,7 @@
         <div class="card-body">
 
             <form class="api-edit-post" method="post">
+                @Html.AntiForgeryToken()
 
                 <input type="hidden" name="Id" value="@Model.Id" />
                 <input type="hidden" name="UserId" value="@Model.User_Id" />

@@ -51,7 +51,6 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -63,24 +62,40 @@ app.UseRouting();
 // Apply CORS policy
 app.UseCors("DefaultCorsPolicy");
 
-// Security headers
-app.Use(async (context, next) =>
+// Security headers: relaxed in Development to allow BrowserLink/hotreload, strict in Production
+if (app.Environment.IsDevelopment())
 {
-    // Prevent MIME type sniffing
-    context.Response.Headers["X-Content-Type-Options"] = "nosniff";
-    // Prevent clickjacking
-    context.Response.Headers["X-Frame-Options"] = "DENY";
-    // Referrer policy
-    context.Response.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
-    // Basic XSS protection (legacy)
-    context.Response.Headers["X-XSS-Protection"] = "1; mode=block";
-    // Permissions-Policy (formerly Feature-Policy) - disable powerful features by default
-    context.Response.Headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()";
-    // Content Security Policy - keep reasonably permissive for dev (allows inline scripts/styles)
-    context.Response.Headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'";
+    app.Use(async (context, next) =>
+    {
+        context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+        context.Response.Headers["X-Frame-Options"] = "DENY";
+        context.Response.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
+        context.Response.Headers["X-XSS-Protection"] = "1; mode=block";
+        context.Response.Headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()";
 
-    await next();
-});
+        context.Response.Headers["Content-Security-Policy"] =
+            "default-src 'self'; " +
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
+            "style-src 'self' 'unsafe-inline'; " +
+            "img-src 'self' data:; " +
+            "connect-src 'self' http://localhost:*/ https://localhost:*/ ws://localhost:*/ wss://localhost:*/;";
+
+        await next();
+    });
+}
+else
+{
+    app.Use(async (context, next) =>
+    {
+        context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+        context.Response.Headers["X-Frame-Options"] = "DENY";
+        context.Response.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
+        context.Response.Headers["X-XSS-Protection"] = "1; mode=block";
+        context.Response.Headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()";
+        context.Response.Headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'";
+        await next();
+    });
+}
 
 app.UseAuthentication();
 app.UseAuthorization();
