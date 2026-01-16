@@ -50,6 +50,7 @@ app.Use(async (context, next) => {
     context.Response.Headers["Permissions-Policy"] =
         "geolocation=(), microphone=(), camera=(), fullscreen=(), payment=()";
 
+    context.Response.Headers["Cross-Origin-Opener-Policy"] = "same-origin";
     context.Response.Headers["Cross-Origin-Resource-Policy"] = "same-origin";
     context.Response.Headers["Cross-Origin-Embedder-Policy"] = "require-corp";
 
