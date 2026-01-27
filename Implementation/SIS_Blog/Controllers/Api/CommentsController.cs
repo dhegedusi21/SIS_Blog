@@ -41,7 +41,6 @@ public class CommentsController : ControllerBase
             BlogpostId = model.BlogpostId
         };
 
-        await _antiforgery.ValidateRequestAsync(HttpContext);
 
         _db.Comments.Add(comment);
         await _db.SaveChangesAsync();
